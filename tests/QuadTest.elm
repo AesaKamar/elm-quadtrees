@@ -7,9 +7,19 @@ import Point exposing (..)
 import Bound exposing (..)
 
 
-randomPoint : Point
-randomPoint =
+pointTopLeft1 : Point
+pointTopLeft1 =
     { x = 10, y = 10 }
+
+
+pointTopLeft2 : Point
+pointTopLeft2 =
+    { x = 40, y = 40 }
+
+
+pointBotRight1 : Point
+pointBotRight1 =
+    { x = 90, y = 90 }
 
 
 outerBound : Bound
@@ -19,8 +29,8 @@ outerBound =
     }
 
 
-nothingPoint : Maybe Point
-nothingPoint =
+noPoint : Maybe Point
+noPoint =
     Nothing
 
 
@@ -32,13 +42,13 @@ suite =
                 let
                     fixture : QuadTree Point
                     fixture =
-                        External nothingPoint outerBound
+                        External noPoint outerBound
 
                     actual =
-                        insert fixture randomPoint
+                        insert fixture pointTopLeft1
 
                     expected =
-                        External (Just randomPoint) outerBound
+                        External (Just pointTopLeft1) outerBound
                 in
                     Expect.equal actual expected
             )
@@ -48,22 +58,86 @@ suite =
                     fixture : QuadTree Point
                     fixture =
                         Internal
-                            ( External nothingPoint (getQuadrantBounds TopLeft outerBound)
-                            , External nothingPoint (getQuadrantBounds TopRight outerBound)
-                            , External nothingPoint (getQuadrantBounds BotLeft outerBound)
-                            , External nothingPoint (getQuadrantBounds BotRight outerBound)
+                            ( External noPoint (getQuadrantBounds TopLeft outerBound)
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External noPoint (getQuadrantBounds BotRight outerBound)
                             )
                             outerBound
 
                     actual =
-                        insert fixture randomPoint
+                        insert fixture pointTopLeft1
 
                     expected =
                         Internal
-                            ( External (Just randomPoint) (getQuadrantBounds TopLeft outerBound)
-                            , External nothingPoint (getQuadrantBounds TopRight outerBound)
-                            , External nothingPoint (getQuadrantBounds BotLeft outerBound)
-                            , External nothingPoint (getQuadrantBounds BotRight outerBound)
+                            ( External (Just pointTopLeft1) (getQuadrantBounds TopLeft outerBound)
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External noPoint (getQuadrantBounds BotRight outerBound)
+                            )
+                            outerBound
+                in
+                    Expect.equal actual expected
+            )
+        , test "insert into tree with 4 empty quads at botRightBound"
+            (\_ ->
+                let
+                    fixture : QuadTree Point
+                    fixture =
+                        Internal
+                            ( External noPoint (getQuadrantBounds TopLeft outerBound)
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External noPoint (getQuadrantBounds BotRight outerBound)
+                            )
+                            outerBound
+
+                    actual =
+                        insert fixture pointBotRight1
+
+                    expected =
+                        Internal
+                            ( External noPoint (getQuadrantBounds TopLeft outerBound)
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External (Just pointBotRight1) (getQuadrantBounds BotRight outerBound)
+                            )
+                            outerBound
+                in
+                    Expect.equal actual expected
+            )
+        , test "insert into tree with conflicting occupants in the topLeft"
+            (\_ ->
+                let
+                    fixture : QuadTree Point
+                    fixture =
+                        Internal
+                            ( External noPoint (getQuadrantBounds TopLeft outerBound)
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External noPoint (getQuadrantBounds BotRight outerBound)
+                            )
+                            outerBound
+
+                    actual =
+                        insert (insert fixture pointTopLeft1) pointTopLeft2
+
+                    expected =
+                        Internal
+                            ( let
+                                topLeftBound =
+                                    (getQuadrantBounds TopLeft outerBound)
+                              in
+                                Internal
+                                    ( External (Just pointTopLeft1) (getQuadrantBounds TopLeft topLeftBound)
+                                    , External noPoint (getQuadrantBounds TopRight topLeftBound)
+                                    , External noPoint (getQuadrantBounds BotLeft topLeftBound)
+                                    , External (Just pointTopLeft2) (getQuadrantBounds BotRight topLeftBound)
+                                    )
+                                    topLeftBound
+                            , External noPoint (getQuadrantBounds TopRight outerBound)
+                            , External noPoint (getQuadrantBounds BotLeft outerBound)
+                            , External noPoint (getQuadrantBounds BotRight outerBound)
                             )
                             outerBound
                 in

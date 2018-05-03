@@ -73,23 +73,17 @@ insert qt newPt =
 
                         botRightBound =
                             getQuadrantBounds BotRight bound
-
-                        newPointPlacement =
-                            (locatePoint bound newPt)
-
-                        existingPointPlacement =
-                            (locatePoint bound existingPt)
                     in
-                        -- TODO Figure out the case where exisitng and new are in the same quadrant
-                        case (locatePoint bound existingPt) of
-                            TopLeft ->
-                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
-
-                            TopRight ->
-                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
-
-                            BotLeft ->
-                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
-
-                            BotRight ->
-                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
+                        insert
+                            (insert
+                                (Internal
+                                    ( External Nothing topLeftBound
+                                    , External Nothing topRightBound
+                                    , External Nothing botLeftBound
+                                    , External Nothing botRightBound
+                                    )
+                                    bound
+                                )
+                                existingPt
+                            )
+                            newPt
