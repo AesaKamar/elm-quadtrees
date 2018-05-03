@@ -9,19 +9,87 @@ type QuadTree a
     | External (Maybe a) Bound
 
 
-insert : QuadTree a -> a -> QuadTree a
-insert qt new =
+insert : QuadTree Point -> Point -> QuadTree Point
+insert qt newPt =
     case qt of
         Internal ( aQuadTree, aQuadTree2, aQuadTree3, aQuadTree4 ) bound ->
-            -- TODO finish this
-            Internal ( aQuadTree, aQuadTree2, aQuadTree3, aQuadTree4 ) bound
+            let
+                newPointPlacement =
+                    (locatePoint bound newPt)
+            in
+                case newPointPlacement of
+                    TopLeft ->
+                        Internal
+                            ( insert aQuadTree newPt
+                            , aQuadTree2
+                            , aQuadTree3
+                            , aQuadTree4
+                            )
+                            bound
+
+                    TopRight ->
+                        Internal
+                            ( aQuadTree
+                            , insert aQuadTree2 newPt
+                            , aQuadTree3
+                            , aQuadTree4
+                            )
+                            bound
+
+                    BotLeft ->
+                        Internal
+                            ( aQuadTree
+                            , aQuadTree2
+                            , insert aQuadTree3 newPt
+                            , aQuadTree4
+                            )
+                            bound
+
+                    BotRight ->
+                        Internal
+                            ( aQuadTree
+                            , aQuadTree2
+                            , aQuadTree3
+                            , insert aQuadTree4 newPt
+                            )
+                            bound
 
         External aMaybe bound ->
             case aMaybe of
                 Nothing ->
                     -- TODO finish this
-                    External (Just new) bound
+                    External (Just newPt) bound
 
-                Just a ->
-                    -- TODO finish this
-                    External (Just a) bound
+                Just existingPt ->
+                    let
+                        topLeftBound =
+                            getQuadrantBounds TopLeft bound
+
+                        topRightBound =
+                            getQuadrantBounds TopRight bound
+
+                        botLeftBound =
+                            getQuadrantBounds BotLeft bound
+
+                        botRightBound =
+                            getQuadrantBounds BotRight bound
+
+                        newPointPlacement =
+                            (locatePoint bound newPt)
+
+                        existingPointPlacement =
+                            (locatePoint bound existingPt)
+                    in
+                        -- TODO Figure out the case where exisitng and new are in the same quadrant
+                        case (locatePoint bound existingPt) of
+                            TopLeft ->
+                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
+
+                            TopRight ->
+                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
+
+                            BotLeft ->
+                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound
+
+                            BotRight ->
+                                Internal ( External Nothing topLeftBound, External Nothing topRightBound, External Nothing botLeftBound, External Nothing botRightBound ) bound

@@ -47,24 +47,25 @@ locatePoint bound test =
             BotLeft
 
 
+getQuadrantBounds : RelativePostion -> Bound -> Bound
+getQuadrantBounds relativePostion outerBound =
+    case relativePostion of
+        TopLeft ->
+            { topLeftmost = outerBound.topLeftmost
+            , botRightmost = center outerBound
+            }
 
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
--- EOF
+        TopRight ->
+            { topLeftmost = { x = (center outerBound).x, y = outerBound.topLeftmost.y }
+            , botRightmost = { x = outerBound.botRightmost.x, y = (center outerBound).y }
+            }
+
+        BotLeft ->
+            { topLeftmost = { x = outerBound.topLeftmost.x, y = (center outerBound).y }
+            , botRightmost = { x = (center outerBound).x, y = outerBound.botRightmost.y }
+            }
+
+        BotRight ->
+            { topLeftmost = (center outerBound)
+            , botRightmost = outerBound.botRightmost
+            }
