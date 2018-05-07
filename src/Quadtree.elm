@@ -9,6 +9,11 @@ type QuadTree a
     | External (Maybe a) Bound
 
 
+emptyQuadTree : QuadTree Point
+emptyQuadTree =
+    External Nothing emptyBound
+
+
 insert : QuadTree Point -> Point -> QuadTree Point
 insert qt newPt =
     case qt of

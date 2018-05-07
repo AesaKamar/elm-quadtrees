@@ -1,5 +1,7 @@
 module Point exposing (..)
 
+-- TODO Use extensible records as an interface
+
 
 type alias Point =
     { x : Float, y : Float }

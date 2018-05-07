@@ -10,8 +10,19 @@ type RelativePostion
     | BotRight
 
 
+
+-- TODO Use extensible records as an interface
+
+
 type alias Bound =
     { topLeftmost : Point, botRightmost : Point }
+
+
+emptyBound : Bound
+emptyBound =
+    { topLeftmost = { x = 0, y = 0 }
+    , botRightmost = { x = 0, y = 0 }
+    }
 
 
 center : Bound -> Point
