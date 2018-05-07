@@ -35,6 +35,9 @@ type alias Model =
 initialPoints =
     [ { x = 40, y = 40 }
     , { x = 1100, y = 100 }
+    , { x = 1000, y = 100 }
+    , { x = 500, y = 1000 }
+    , { x = 650, y = 600 }
     ]
 
 
@@ -130,9 +133,10 @@ viewQuadTree qt =
                         , SvgA.y (bound.topLeftmost.y |> toString)
                         , SvgA.width (bound.botRightmost.x |> toString)
                         , SvgA.height (bound.botRightmost.y |> toString)
-                        , SvgA.strokeWidth "3"
+                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:3px; outline-color:black"
                         , SvgA.fill "none"
-                        , SvgA.stroke "black"
+
+                        -- , SvgA.stroke "black"
                         ]
                         []
                     , Svg.circle
@@ -150,9 +154,8 @@ viewQuadTree qt =
                         , SvgA.y (bound.topLeftmost.y |> toString)
                         , SvgA.width (bound.botRightmost.x |> toString)
                         , SvgA.height (bound.botRightmost.y |> toString)
-                        , SvgA.strokeWidth "3"
+                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:3px; outline-color:pink"
                         , SvgA.fill "none"
-                        , SvgA.stroke "pink"
                         ]
                         []
                     ]
