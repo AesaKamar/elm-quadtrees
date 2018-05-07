@@ -9,6 +9,7 @@ import Task exposing (perform)
 import Bound exposing (..)
 import Svg
 import Svg.Attributes as SvgA
+import List exposing ((::))
 
 
 main : Program Never Model Msg
@@ -27,15 +28,19 @@ main =
 
 type alias Model =
     { quadTree : QuadTree Point
-    , points : List Point
     , windowSize : Bound
     }
+
+
+initialPoints =
+    [ { x = 40, y = 40 }
+    , { x = 1100, y = 100 }
+    ]
 
 
 initialModel : Model
 initialModel =
     { quadTree = emptyQuadTree
-    , points = [ { x = 40, y = 40 } ]
     , windowSize =
         { topLeftmost = { x = 0, y = 0 }
         , botRightmost = { x = 100, y = 100 }
@@ -56,6 +61,7 @@ init =
 
 type Msg
     = WindowResize Window.Size
+    | InsertPoint (List Point)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -71,12 +77,27 @@ update msg model =
                         }
                     }
             in
-                ( { quadTree = emptyQuadTree
-                  , points = model.points
+                ( { quadTree = External Nothing bound
                   , windowSize = bound
                   }
-                , Cmd.none
+                , Task.succeed (InsertPoint initialPoints) |> Task.perform identity
                 )
+
+        InsertPoint pts ->
+            case pts of
+                h :: t ->
+                    ( { quadTree = insert model.quadTree h
+                      , windowSize = model.windowSize
+                      }
+                    , Task.succeed (InsertPoint t) |> Task.perform identity
+                    )
+
+                [] ->
+                    ( { quadTree = model.quadTree
+                      , windowSize = model.windowSize
+                      }
+                    , Cmd.none
+                    )
 
 
 
@@ -107,6 +128,9 @@ viewQuadTree qt =
                     [ Svg.rect
                         [ SvgA.x (bound.topLeftmost.x |> toString)
                         , SvgA.y (bound.topLeftmost.y |> toString)
+                        , SvgA.width (bound.botRightmost.x |> toString)
+                        , SvgA.height (bound.botRightmost.y |> toString)
+                        , SvgA.strokeWidth "3"
                         , SvgA.fill "none"
                         , SvgA.stroke "black"
                         ]
@@ -114,6 +138,7 @@ viewQuadTree qt =
                     , Svg.circle
                         [ SvgA.cx (pt.x |> toString)
                         , SvgA.cy (pt.y |> toString)
+                        , SvgA.r ("3")
                         , SvgA.fill "black"
                         ]
                         []
@@ -123,6 +148,9 @@ viewQuadTree qt =
                     [ Svg.rect
                         [ SvgA.x (bound.topLeftmost.x |> toString)
                         , SvgA.y (bound.topLeftmost.y |> toString)
+                        , SvgA.width (bound.botRightmost.x |> toString)
+                        , SvgA.height (bound.botRightmost.y |> toString)
+                        , SvgA.strokeWidth "3"
                         , SvgA.fill "none"
                         , SvgA.stroke "pink"
                         ]
