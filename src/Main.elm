@@ -10,6 +10,7 @@ import Bound exposing (..)
 import Svg
 import Svg.Attributes as SvgA
 import List exposing ((::))
+import Pointer exposing (onDown)
 
 
 main : Program Never Model Msg
@@ -34,10 +35,12 @@ type alias Model =
 
 initialPoints =
     [ { x = 40, y = 40 }
-    , { x = 1100, y = 100 }
-    , { x = 1000, y = 100 }
-    , { x = 500, y = 1000 }
-    , { x = 650, y = 600 }
+    , { x = 600, y = 200 }
+
+    -- , { x = 1100, y = 100 }
+    -- , { x = 1000, y = 100 }
+    -- , { x = 500, y = 1000 }
+    -- , { x = 650, y = 600 }
     ]
 
 
@@ -65,6 +68,7 @@ init =
 type Msg
     = WindowResize Window.Size
     | InsertPoint (List Point)
+    | PointerDown ( Float, Float )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,7 +87,7 @@ update msg model =
                 ( { quadTree = External Nothing bound
                   , windowSize = bound
                   }
-                , Task.succeed (InsertPoint initialPoints) |> Task.perform identity
+                , sendMessage (InsertPoint initialPoints)
                 )
 
         InsertPoint pts ->
@@ -92,7 +96,7 @@ update msg model =
                     ( { quadTree = insert model.quadTree h
                       , windowSize = model.windowSize
                       }
-                    , Task.succeed (InsertPoint t) |> Task.perform identity
+                    , sendMessage (InsertPoint t)
                     )
 
                 [] ->
@@ -101,6 +105,17 @@ update msg model =
                       }
                     , Cmd.none
                     )
+
+        PointerDown ( x, y ) ->
+            ( model
+            , sendMessage (InsertPoint [ { x = x, y = y } ])
+            )
+
+
+sendMessage : a -> Cmd a
+sendMessage x =
+    Task.succeed x
+        |> Task.perform identity
 
 
 
@@ -133,7 +148,7 @@ viewQuadTree qt =
                         , SvgA.y (bound.topLeftmost.y |> toString)
                         , SvgA.width (bound.botRightmost.x |> toString)
                         , SvgA.height (bound.botRightmost.y |> toString)
-                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:3px; outline-color:black"
+                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
                         , SvgA.fill "none"
 
                         -- , SvgA.stroke "black"
@@ -154,7 +169,7 @@ viewQuadTree qt =
                         , SvgA.y (bound.topLeftmost.y |> toString)
                         , SvgA.width (bound.botRightmost.x |> toString)
                         , SvgA.height (bound.botRightmost.y |> toString)
-                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:3px; outline-color:pink"
+                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
                         , SvgA.fill "none"
                         ]
                         []
@@ -163,10 +178,15 @@ viewQuadTree qt =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ onDown (relativePos >> PointerDown) ]
         [ Svg.svg
             [ SvgA.height (model.windowSize.botRightmost.y |> toString)
             , SvgA.width (model.windowSize.botRightmost.x |> toString)
             ]
             (viewQuadTree model.quadTree)
         ]
+
+
+relativePos : Pointer.Event -> ( Float, Float )
+relativePos event =
+    event.pointer.offsetPos
