@@ -62,7 +62,6 @@ insert qt newPt =
         External aMaybe bound ->
             case aMaybe of
                 Nothing ->
-                    -- TODO finish this
                     External (Just newPt) bound
 
                 Just existingPt ->
@@ -79,7 +78,8 @@ insert qt newPt =
                         botRightBound =
                             getQuadrantBounds BotRight bound
                     in
-                        insert
+                        --FIXME This is incorrect since we lose information about points that share coordinates
+                        if existingPt.x == newPt.x && existingPt.y == newPt.y then
                             (insert
                                 (Internal
                                     ( External Nothing topLeftBound
@@ -91,4 +91,17 @@ insert qt newPt =
                                 )
                                 existingPt
                             )
-                            newPt
+                        else
+                            insert
+                                (insert
+                                    (Internal
+                                        ( External Nothing topLeftBound
+                                        , External Nothing topRightBound
+                                        , External Nothing botLeftBound
+                                        , External Nothing botRightBound
+                                        )
+                                        bound
+                                    )
+                                    existingPt
+                                )
+                                newPt

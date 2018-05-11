@@ -36,12 +36,12 @@ type alias Model =
 
 
 initialPoints =
-    [ { x = 40, y = 40 }
-    , { x = 600, y = 200 }
-    , { x = 1100, y = 100 }
-    , { x = 1000, y = 100 }
-    , { x = 500, y = 1000 }
-    , { x = 650, y = 600 }
+    [-- { x = 40, y = 40 }
+     -- , { x = 600, y = 200 }
+     -- , { x = 1100, y = 100 }
+     -- , { x = 1000, y = 100 }
+     -- , { x = 500, y = 1000 }
+     -- , { x = 650, y = 600 }
     ]
 
 
@@ -155,37 +155,34 @@ viewQuadTree qt =
         External aMaybe bound ->
             case aMaybe of
                 Just pt ->
-                    [ Svg.rect
-                        [ SvgA.x (bound.topLeftmost.x |> toString)
-                        , SvgA.y (bound.topLeftmost.y |> toString)
-                        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
-                        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
-                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
-                        , SvgA.fill "none"
-
-                        -- , SvgA.stroke "black"
-                        ]
-                        []
-                    , Svg.circle
-                        [ SvgA.cx (pt.x |> toString)
-                        , SvgA.cy (pt.y |> toString)
-                        , SvgA.r ("3")
-                        , SvgA.fill "black"
-                        ]
-                        []
+                    [ drawBound bound
+                    , drawPoint pt
                     ]
 
                 Nothing ->
-                    [ Svg.rect
-                        [ SvgA.x (bound.topLeftmost.x |> toString)
-                        , SvgA.y (bound.topLeftmost.y |> toString)
-                        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
-                        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
-                        , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
-                        , SvgA.fill "none"
-                        ]
-                        []
-                    ]
+                    [ drawBound bound ]
+
+
+drawPoint pt =
+    Svg.circle
+        [ SvgA.cx (pt.x |> toString)
+        , SvgA.cy (pt.y |> toString)
+        , SvgA.r ("3")
+        , SvgA.fill "red"
+        ]
+        []
+
+
+drawBound bound =
+    Svg.rect
+        [ SvgA.x (bound.topLeftmost.x |> toString)
+        , SvgA.y (bound.topLeftmost.y |> toString)
+        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
+        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
+        , SvgA.style "outline-style:solid; outline-offset:-1px; outline-width:2px; outline-color:black"
+        , SvgA.fill "none"
+        ]
+        []
 
 
 view : Model -> Html Msg
