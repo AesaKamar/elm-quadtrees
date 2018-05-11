@@ -11,6 +11,7 @@ import Svg
 import Svg.Attributes as SvgA
 import List exposing ((::))
 import Pointer exposing (onDown)
+import Random as Rnd
 
 
 main : Program Never Model Msg
@@ -30,17 +31,17 @@ main =
 type alias Model =
     { quadTree : QuadTree Point
     , windowSize : Bound
+    , randomSeed : Rnd.Seed
     }
 
 
 initialPoints =
     [ { x = 40, y = 40 }
     , { x = 600, y = 200 }
-
-    -- , { x = 1100, y = 100 }
-    -- , { x = 1000, y = 100 }
-    -- , { x = 500, y = 1000 }
-    -- , { x = 650, y = 600 }
+    , { x = 1100, y = 100 }
+    , { x = 1000, y = 100 }
+    , { x = 500, y = 1000 }
+    , { x = 650, y = 600 }
     ]
 
 
@@ -51,6 +52,7 @@ initialModel =
         { topLeftmost = { x = 0, y = 0 }
         , botRightmost = { x = 100, y = 100 }
         }
+    , randomSeed = Rnd.initialSeed 12345
     }
 
 
@@ -86,6 +88,7 @@ update msg model =
             in
                 ( { quadTree = External Nothing bound
                   , windowSize = bound
+                  , randomSeed = model.randomSeed
                   }
                 , sendMessage (InsertPoint initialPoints)
                 )
@@ -95,6 +98,7 @@ update msg model =
                 h :: t ->
                     ( { quadTree = insert model.quadTree h
                       , windowSize = model.windowSize
+                      , randomSeed = model.randomSeed
                       }
                     , sendMessage (InsertPoint t)
                     )
@@ -102,14 +106,22 @@ update msg model =
                 [] ->
                     ( { quadTree = model.quadTree
                       , windowSize = model.windowSize
+                      , randomSeed = model.randomSeed
                       }
                     , Cmd.none
                     )
 
         PointerDown ( x, y ) ->
-            ( model
-            , sendMessage (InsertPoint [ { x = x, y = y } ])
-            )
+            let
+                rndx =
+                    Rnd.step (Rnd.float -0.001 0.001) model.randomSeed
+
+                rndy =
+                    Rnd.step (Rnd.float -0.001 0.001) model.randomSeed
+            in
+                ( model
+                , sendMessage (InsertPoint [ { x = x, y = y } ])
+                )
 
 
 sendMessage : a -> Cmd a
@@ -146,8 +158,8 @@ viewQuadTree qt =
                     [ Svg.rect
                         [ SvgA.x (bound.topLeftmost.x |> toString)
                         , SvgA.y (bound.topLeftmost.y |> toString)
-                        , SvgA.width (bound.botRightmost.x |> toString)
-                        , SvgA.height (bound.botRightmost.y |> toString)
+                        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
+                        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
                         , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
                         , SvgA.fill "none"
 
@@ -167,8 +179,8 @@ viewQuadTree qt =
                     [ Svg.rect
                         [ SvgA.x (bound.topLeftmost.x |> toString)
                         , SvgA.y (bound.topLeftmost.y |> toString)
-                        , SvgA.width (bound.botRightmost.x |> toString)
-                        , SvgA.height (bound.botRightmost.y |> toString)
+                        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
+                        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
                         , SvgA.style "outline-style:solid; outline-offset:-3px; outline-width:4px; outline-color:black"
                         , SvgA.fill "none"
                         ]
