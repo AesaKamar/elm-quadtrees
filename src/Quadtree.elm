@@ -17,7 +17,7 @@ emptyQuadTree =
 insert : QuadTree Point -> Point -> QuadTree Point
 insert qt newPt =
     case qt of
-        Internal ( aQuadTree, aQuadTree2, aQuadTree3, aQuadTree4 ) bound ->
+        Internal ( topLeftQT, topRightQT, botLeftQT, botRightQT ) bound ->
             let
                 newPointPlacement =
                     (locatePoint bound newPt)
@@ -25,37 +25,37 @@ insert qt newPt =
                 case newPointPlacement of
                     TopLeft ->
                         Internal
-                            ( insert aQuadTree newPt
-                            , aQuadTree2
-                            , aQuadTree3
-                            , aQuadTree4
+                            ( insert topLeftQT newPt
+                            , topRightQT
+                            , botLeftQT
+                            , botRightQT
                             )
                             bound
 
                     TopRight ->
                         Internal
-                            ( aQuadTree
-                            , insert aQuadTree2 newPt
-                            , aQuadTree3
-                            , aQuadTree4
+                            ( topLeftQT
+                            , insert topRightQT newPt
+                            , botLeftQT
+                            , botRightQT
                             )
                             bound
 
                     BotLeft ->
                         Internal
-                            ( aQuadTree
-                            , aQuadTree2
-                            , insert aQuadTree3 newPt
-                            , aQuadTree4
+                            ( topLeftQT
+                            , topRightQT
+                            , insert botLeftQT newPt
+                            , botRightQT
                             )
                             bound
 
                     BotRight ->
                         Internal
-                            ( aQuadTree
-                            , aQuadTree2
-                            , aQuadTree3
-                            , insert aQuadTree4 newPt
+                            ( topLeftQT
+                            , topRightQT
+                            , botLeftQT
+                            , insert botRightQT newPt
                             )
                             bound
 
