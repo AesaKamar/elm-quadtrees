@@ -9,9 +9,10 @@ import Task exposing (perform)
 import Bound exposing (..)
 import Svg
 import Svg.Attributes as SvgA
-import List exposing ((::))
 import Pointer exposing (onDown)
 import Random as Rnd
+import DrawHelpers exposing (..)
+import Util exposing (..)
 
 
 main : Program Never Model Msg
@@ -124,12 +125,6 @@ update msg model =
                 )
 
 
-sendMessage : a -> Cmd a
-sendMessage x =
-    Task.succeed x
-        |> Task.perform identity
-
-
 
 -- SUBSCRIPTIONS
 
@@ -143,48 +138,6 @@ subscriptions model =
 -- VIEW
 
 
-viewQuadTree : QuadTree Point -> List (Svg.Svg Msg)
-viewQuadTree qt =
-    case qt of
-        Internal ( aQuadTree, aQuadTree2, aQuadTree3, aQuadTree4 ) bound ->
-            (viewQuadTree aQuadTree)
-                ++ (viewQuadTree aQuadTree2)
-                ++ (viewQuadTree aQuadTree3)
-                ++ (viewQuadTree aQuadTree4)
-
-        External aMaybe bound ->
-            case aMaybe of
-                Just pt ->
-                    [ drawBound bound
-                    , drawPoint pt
-                    ]
-
-                Nothing ->
-                    [ drawBound bound ]
-
-
-drawPoint pt =
-    Svg.circle
-        [ SvgA.cx (pt.x |> toString)
-        , SvgA.cy (pt.y |> toString)
-        , SvgA.r ("3")
-        , SvgA.fill "red"
-        ]
-        []
-
-
-drawBound bound =
-    Svg.rect
-        [ SvgA.x (bound.topLeftmost.x |> toString)
-        , SvgA.y (bound.topLeftmost.y |> toString)
-        , SvgA.width ((bound.botRightmost.x - bound.topLeftmost.x) |> toString)
-        , SvgA.height ((bound.botRightmost.y - bound.topLeftmost.y) |> toString)
-        , SvgA.style "outline-style:solid; outline-offset:-1px; outline-width:2px; outline-color:black"
-        , SvgA.fill "none"
-        ]
-        []
-
-
 view : Model -> Html Msg
 view model =
     div [ onDown (relativePos >> PointerDown) ]
@@ -192,10 +145,5 @@ view model =
             [ SvgA.height (model.windowSize.botRightmost.y |> toString)
             , SvgA.width (model.windowSize.botRightmost.x |> toString)
             ]
-            (viewQuadTree model.quadTree)
+            (drawQuadTree model.quadTree)
         ]
-
-
-relativePos : Pointer.Event -> ( Float, Float )
-relativePos event =
-    event.pointer.offsetPos
