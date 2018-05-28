@@ -32,6 +32,16 @@ center bound =
     }
 
 
+boundWidth : Bound -> Float
+boundWidth bound =
+    bound.botRightmost.x - bound.topLeftmost.x
+
+
+boundHeight : Bound -> Float
+boundHeight bound =
+    bound.botRightmost.y - bound.topLeftmost.y
+
+
 inside : Point -> Point -> Point -> Bool
 inside topLeft botRight test =
     (between topLeft.x botRight.x test.x) && (between topLeft.y botRight.y test.y)
