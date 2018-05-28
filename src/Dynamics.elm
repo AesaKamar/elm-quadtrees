@@ -27,8 +27,12 @@ type alias Force =
     { fx : Float, fy : Float }
 
 
-type alias DynamicPoint =
-    { p : Point, m : Mass, v : Velocity, a : Acceleration }
+type alias MassPoint =
+    { p : Point, m : Mass }
+
+
+type alias DynamicPoint mp =
+    { mp | mp : MassPoint, v : Velocity, a : Acceleration }
 
 
 accelerate : TimeDelta -> Acceleration -> Velocity
@@ -41,6 +45,6 @@ displace t v =
     { dx = v.vx * t, dy = v.vy * t }
 
 
-push : Mass -> Force -> Acceleration
-push m f =
+applyForce : Mass -> Force -> Acceleration
+applyForce m f =
     { ax = f.fx / m, ay = f.fy / m }
