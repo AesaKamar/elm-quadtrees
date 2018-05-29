@@ -5,11 +5,11 @@ import Bound exposing (..)
 
 
 type QuadTree a
-    = Internal ( QuadTree a, QuadTree a, QuadTree a, QuadTree a ) Bound
-    | External (Maybe a) Bound
+    = Internal ( QuadTree a, QuadTree a, QuadTree a, QuadTree a ) Bound {}
+    | External (Maybe a) Bound {}
 
 
-emptyQuadTree : QuadTree Point
+emptyQuadTree : QuadTree Point {}
 emptyQuadTree =
     External Nothing emptyBound
 

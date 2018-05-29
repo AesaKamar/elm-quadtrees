@@ -14,40 +14,40 @@ type RelativePostion
 -- TODO Use extensible records as an interface
 
 
-type alias Bound =
-    { topLeftmost : Point, botRightmost : Point }
+type alias Bound p =
+    { topLeftmost : Point p, botRightmost : Point p }
 
 
-emptyBound : Bound
+emptyBound : Bound {}
 emptyBound =
-    { topLeftmost = { x = 0, y = 0 }
-    , botRightmost = { x = 0, y = 0 }
+    { topLeftmost = { x = 0.0, y = 0.0 }
+    , botRightmost = { x = 0.0, y = 0.0 }
     }
 
 
-center : Bound -> Point
+center : Bound p -> Point {}
 center bound =
     { x = (bound.botRightmost.x - bound.topLeftmost.x) / 2 + bound.topLeftmost.x
     , y = (bound.botRightmost.y - bound.topLeftmost.y) / 2 + bound.topLeftmost.y
     }
 
 
-boundWidth : Bound -> Float
+boundWidth : Bound p -> Float
 boundWidth bound =
     bound.botRightmost.x - bound.topLeftmost.x
 
 
-boundHeight : Bound -> Float
+boundHeight : Bound p -> Float
 boundHeight bound =
     bound.botRightmost.y - bound.topLeftmost.y
 
 
-inside : Point -> Point -> Point -> Bool
+inside : Point p -> Point p -> Point p -> Bool
 inside topLeft botRight test =
     (between topLeft.x botRight.x test.x) && (between topLeft.y botRight.y test.y)
 
 
-locatePoint : Bound -> Point -> RelativePostion
+locatePoint : Bound {} -> Point {} -> RelativePostion
 locatePoint bound test =
     let
         ctr =
@@ -68,7 +68,7 @@ locatePoint bound test =
             BotLeft
 
 
-getQuadrantBounds : RelativePostion -> Bound -> Bound
+getQuadrantBounds : RelativePostion -> Bound {} -> Bound {}
 getQuadrantBounds relativePostion outerBound =
     case relativePostion of
         TopLeft ->

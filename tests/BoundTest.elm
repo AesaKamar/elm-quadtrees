@@ -6,7 +6,7 @@ import Bound exposing (..)
 import Point exposing (..)
 
 
-box : Bound
+box : Bound {}
 box =
     { topLeftmost = { x = 0, y = 0 }, botRightmost = { x = 100, y = 100 } }
 
