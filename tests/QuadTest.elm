@@ -3,7 +3,7 @@ module QuadTest exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
 import Quadtree exposing (..)
-import Point exposing (..)
+import Pointlike exposing (..)
 import Bound exposing (..)
 
 

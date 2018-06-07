@@ -1,6 +1,6 @@
 module Quadtree exposing (..)
 
-import Point exposing (..)
+import Pointlike exposing (..)
 import Bound exposing (..)
 
 
@@ -9,12 +9,12 @@ type QuadTree a
     | External (Maybe a) Bound
 
 
-emptyQuadTree : QuadTree Point
+emptyQuadTree : QuadTree (Pointlike a)
 emptyQuadTree =
     External Nothing emptyBound
 
 
-insert : QuadTree Point -> Point -> QuadTree Point
+insert : QuadTree (Pointlike a) -> Pointlike a -> QuadTree (Pointlike a)
 insert qt newPt =
     case qt of
         Internal ( topLeftQT, topRightQT, botLeftQT, botRightQT ) bound ->

@@ -2,7 +2,7 @@ module MassyQuadTree exposing (..)
 
 import Dynamics exposing (..)
 import Quadtree exposing (..)
-import Point exposing (..)
+import Pointlike exposing (..)
 import Bound exposing (..)
 
 
@@ -19,6 +19,6 @@ type alias DistanceRatio =
     Float
 
 
-areSufficientlyFar : DistanceRatio -> Bound -> Point -> Point -> Bool
+areSufficientlyFar : DistanceRatio -> Bound -> Pointlike -> Pointlike -> Bool
 areSufficientlyFar ratio bound pointA pointB =
     ratio > (distance pointA pointB) / ((boundWidth bound + boundHeight bound) / 2)

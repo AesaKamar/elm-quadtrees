@@ -2,7 +2,7 @@ module PointTest exposing (..)
 
 import Expect exposing (Expectation)
 import Test exposing (..)
-import Point exposing (..)
+import Pointlike exposing (..)
 
 
 suite : Test

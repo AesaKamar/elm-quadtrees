@@ -1,12 +1,12 @@
 module DrawHelpers exposing (..)
 
 import Quadtree exposing (..)
-import Point exposing (..)
+import Pointlike exposing (..)
 import Svg
 import Svg.Attributes as SvgA
 
 
-drawQuadTree : QuadTree Point -> List (Svg.Svg msg)
+drawQuadTree : QuadTree Pointlike -> List (Svg.Svg msg)
 drawQuadTree qt =
     case qt of
         Internal ( aQuadTree, aQuadTree2, aQuadTree3, aQuadTree4 ) bound ->

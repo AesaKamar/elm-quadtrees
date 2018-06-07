@@ -1,6 +1,6 @@
 module Dynamics exposing (..)
 
-import Point exposing (..)
+import Pointlike exposing (..)
 
 
 type alias TimeDelta =
@@ -28,7 +28,7 @@ type alias Force =
 
 
 type alias MassPoint =
-    { p : Point, m : Mass }
+    { p : Pointlike, m : Mass }
 
 
 type alias DynamicPoint mp =

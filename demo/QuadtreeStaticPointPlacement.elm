@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes as HtmlA
 import Window exposing (..)
 import Quadtree exposing (..)
-import Point exposing (..)
+import Pointlike exposing (..)
 import Task exposing (perform)
 import Bound exposing (..)
 import Svg
@@ -30,7 +30,7 @@ main =
 
 
 type alias Model =
-    { quadTree : QuadTree Point
+    { quadTree : QuadTree Pointlike
     , windowSize : Bound
     , randomSeed : Rnd.Seed
     }
@@ -70,7 +70,7 @@ init =
 
 type Msg
     = WindowResize Window.Size
-    | InsertPoint (List Point)
+    | InsertPoint (List Pointlike)
     | PointerDown ( Float, Float )
 
 

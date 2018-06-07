@@ -1,6 +1,6 @@
 module Bound exposing (..)
 
-import Point exposing (..)
+import Pointlike exposing (..)
 
 
 type RelativePostion
@@ -42,12 +42,12 @@ boundHeight bound =
     bound.botRightmost.y - bound.topLeftmost.y
 
 
-inside : Point -> Point -> Point -> Bool
+inside : Point -> Point -> Pointlike a -> Bool
 inside topLeft botRight test =
     (between topLeft.x botRight.x test.x) && (between topLeft.y botRight.y test.y)
 
 
-locatePoint : Bound -> Point -> RelativePostion
+locatePoint : Bound -> Pointlike a -> RelativePostion
 locatePoint bound test =
     let
         ctr =
