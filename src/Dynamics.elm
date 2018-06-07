@@ -27,12 +27,12 @@ type alias Force =
     { fx : Float, fy : Float }
 
 
-type alias MassPoint =
-    { p : Pointlike, m : Mass }
+type alias MassPointlike a =
+    Pointlike { a | m : Mass }
 
 
-type alias DynamicPoint mp =
-    { mp | mp : MassPoint, v : Velocity, a : Acceleration }
+type alias DynamicPointlike t =
+    MassPointlike { t | v : Velocity, a : Acceleration }
 
 
 accelerate : TimeDelta -> Acceleration -> Velocity
